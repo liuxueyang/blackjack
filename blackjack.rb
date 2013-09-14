@@ -9,6 +9,10 @@ class Card
     @face = face
     @value = value
   end
+
+  def to_s
+    "#{@face} of #{@suit}"
+  end
 end
 
 class Deck
@@ -44,11 +48,30 @@ end
 
 
 class Player
+  attr_reader :name
   attr_accessor :hand, :stack
 
-  def initialize
+  def initialize(name)
+    @name = name
     @hand = []
     @stack = STARTING_STACK
+  end
+
+  def hand_total
+    total = 0
+    @hand.each do |card|
+      total += card.value
+    end
+    total
+  end
+
+  def summary
+    summary = "==== #{@name} ====\n"
+    @hand.each do |card|
+      summary += "#{card.to_s}\n"
+    end
+    summary += "Total: #{hand_total}\n"
+
   end
 end
 
@@ -65,10 +88,6 @@ class Dealer
       end
       @hand << @deck.take_card
     end
-  end
-
-  def showing
-    @hand[0]
   end
 
 end
@@ -91,9 +110,12 @@ end
 players = []
 puts "Welcome to Blackjack!"
 puts "How many players?"
-num_players = gets.chomp
-num_players.times do
-  players << Player.new
+num_players = gets.chomp.to_i
+num_players.times do |i|
+  players << Player.new("Player #{i+1}")
 end
 game = Game.new(players)
+
+
+puts players[0].summary
 
