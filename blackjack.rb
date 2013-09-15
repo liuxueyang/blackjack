@@ -19,6 +19,7 @@ class Card
   def to_s
     "#{@face} of #{@suit}"
   end
+
 end
 
 class Deck
@@ -67,19 +68,12 @@ class Player
   end
 
   def hand_total
-    total = 0
-    @hand.each do |card|
-      total += card.value
-    end
-    total
+    @hand.map(&:value).reduce(:+)
   end
 
   def summary
-    summary = "==== #{@name} ====\n"
-    @hand.each do |card|
-      summary += "#{card.to_s}\n"
-    end
-    summary += "----------\nTotal: #{hand_total}\n#{status}\n"
+    @hand.reduce("====== #{@name} ======\n"){ |memo,card| memo + "#{card}\n" } +
+    "----------\nTotal: #{hand_total}\n#{status}\n"
   end
 
   def status
@@ -134,8 +128,10 @@ class Dealer
       players.each { |player| winning_players << player if player.status != :bust }
     else
       players.each do |player|
-        if player.status != :bust && player.hand_total > @dealer_player.hand_total
+        if player.hand_total > @dealer_player.hand_total && player.status != :bust
           winning_players << player
+        elsif player.hand_total == @dealer_player.hand_total && player.status != :bust
+          push(player)
         end
       end
     end
@@ -150,6 +146,10 @@ class Dealer
     else
       player.stack += player.bet*2
     end
+  end
+
+  def push(player)
+    player.stack += player.bet
   end
 
 
