@@ -1,4 +1,5 @@
 STARTING_STACK = 1000
+NUMBER_OF_DECKS = 1
 STATUS_MESSAGE = {:blackjack => "Blackjack!",
                   :ready => "Waiting for action...",
                   :stand => "Stand",
@@ -31,17 +32,13 @@ class Deck
   end
 
   def generate_cards
-    suits = ['Spades','Clubs','Hearts','Diamonds']
-    suits.each do |suit|
-      @cards << Card.new(suit, 'Ace', 1)
-
-      2.upto(10) do |i|
-        @cards << Card.new(suit, i.to_s, i)
-      end
-
-      pictures = ['Jack', 'Queen', 'King']
-      pictures.each do |picture|
-        @cards << Card.new(suit, picture, 10)
+    suits = %w{ Spades Clubs Hearts Diamonds }
+    NUMBER_OF_DECKS.times do
+      suits.each do |suit|
+        @cards << Card.new(suit, 'Ace', 1)
+        2.upto(10) { |i| @cards << Card.new(suit, i.to_s, i) }
+        pictures = %w{ Jack Queen King }
+        pictures.each { |picture| @cards << Card.new(suit, picture, 10) }
       end
     end
   end
