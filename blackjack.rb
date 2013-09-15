@@ -49,13 +49,13 @@ end
 
 class Player
   attr_reader :name
-  attr_accessor :hand, :stack, :status
+  attr_accessor :hand, :stack, :stand
 
   def initialize(name)
     @name = name
     @hand = []
     @stack = STARTING_STACK
-    @status = :ready
+    @stand = false
   end
 
   def hand_total
@@ -71,8 +71,19 @@ class Player
     @hand.each do |card|
       summary += "#{card.to_s}\n"
     end
-    summary += "Total: #{hand_total}\n"
+    summary += "----------\nTotal: #{hand_total}\n#{status}\n"
+  end
 
+  def status
+    if hand_total == 21 && @hand.length == 2
+      :blackjack
+    elsif hand_total == 21 || @stand == true
+      :stand
+    elsif hand_total < 21
+      :ready
+    else hand_total > 21
+      :bust
+    end
   end
 end
 
@@ -91,14 +102,16 @@ class Dealer
     end
   end
 
+  def hit(player)
+    player.hand << @deck.take_card
+  end
+
 end
 
 
 
 #=========== METHODS TO GO IN A MODULE? ================
-def get_action(player)
-  # Prompt user to hit or stand
-end
+
 
 def play(player)
   turn
@@ -136,14 +149,30 @@ dealer = Dealer.new
 dealer.deal(players)
 
 players.each do |player|
-  action = get_action(player)
-  # game.action if player.status != :stand || :bust
+  puts player.summary
+  while player.status == :ready do
+    action = ""
+    until action == "h" || action == "s"
+      puts "Hit or stand? (type 'h' or 's')"
+      action = gets.chomp
+    end
+    player.stand = true if action == 's'
+    dealer.hit(player) if action == 'h'
+    puts player.summary
+  end
+
+  if player.status == :blackjack
+    puts "Blackjack!"
+  elsif player.status == :bust
+    puts "Bust!"
+  elsif player.status == :stand
+    puts "Stand."
+  else
+    raise "Unexpected player status"
+  end
 end
 
 dealer_play
 declare_winners
 
-
-
-puts players[0].summary
 
