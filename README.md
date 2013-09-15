@@ -8,5 +8,5 @@ Simple game of command line blackjack. Can be played with multiple players, each
 - Single deck
 - One hand per player
 - Dealer hits on soft 17
-- Blackjack pays 2 to 1 (we are generous!)
+- Blackjack pays 3 to 1
 - No insurance

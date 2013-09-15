@@ -2,6 +2,12 @@ require 'pp'
 
 STARTING_STACK = 1000
 
+# Card = Struct.new(:suit, :face, :value) do
+#   def to_s
+#     "#{face} of #{suit}"
+#   end
+# end
+
 class Card
   attr_reader :suit, :face, :value
   def initialize(suit, face, value)
@@ -79,12 +85,14 @@ class Player
   def status
     if hand_total == 21 && @hand.length == 2
       :blackjack
+    elsif hand_total > 21
+      :bust
     elsif hand_total == 21 || @stand == true
       :stand
     elsif hand_total < 21
       :ready
-    else hand_total > 21
-      :bust
+    else
+      raise "Unknown status error"
     end
   end
 end
@@ -114,25 +122,33 @@ class Dealer
 
   def play
     while @dealer_player.status == :ready
-      hit(@dealer_player)
+      hit(@dealer_player) if @dealer_player.hand_total < 17
       @dealer_player.stand = true if @dealer_player.hand_total >= 17
     end
     @dealer_player.summary
   end
 
   def winners(players)
+    winning_players = []
     if @dealer_player.status == :bust
-      # Everyone wins
+      players.each { |player| winning_players << player if player.status != :bust }
     else
-      # Check scores against @dealer_player.hand_total
+      players.each do |player|
+        if player.status != :bust && player.hand_total > @dealer_player.hand_total
+          winning_players << player
+        end
+      end
     end
+
+    winning_players.each { |player| payout(player) }
+    winning_players
   end
 
   def payout(player)
     if player.status == :blackjack
-      player.stack += player.bet*2
+      player.stack += player.bet*3
     else
-      player.stack += player.bet
+      player.stack += player.bet*2
     end
   end
 
@@ -176,6 +192,7 @@ players.each do |player|
     puts "No bet placed this game" if bet == 0
   end
   player.bet = bet
+  player.stack -= bet
 end
 
 
@@ -196,15 +213,15 @@ players.each do |player|
     dealer.hit(player) if action == 'h'
   end
 
-  if player.status == :blackjack
-    puts "Blackjack!"
-  elsif player.status == :bust
-    puts "Bust!"
-  elsif player.status == :stand
-    puts "Stand."
-  else
-    raise "Unexpected player status"
-  end
+  # if player.status == :blackjack
+  #   puts "Blackjack!"
+  # elsif player.status == :bust
+  #   puts "Bust!"
+  # elsif player.status == :stand
+  #   puts "Stand."
+  # else
+  #   raise "Unexpected player status"
+  # end
 
   puts "Hit enter to continue"
   gets
@@ -212,6 +229,19 @@ end
 
 clear_screen!
 puts dealer.play
-dealer.winners(players)
+
+
+
+# Determine and announce winners
+# -------------------------
+winning_players = dealer.winners(players)
+if winning_players.length == 0
+  puts "No winners"
+else
+  winning_players.each do |player|
+    puts "#{player.name} wins! Balance: $#{player.stack}"
+  end
+end
+
 
 
