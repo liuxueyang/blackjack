@@ -1,3 +1,5 @@
+STARTING_STACK = 1000
+STATUS_MESSAGE = {:blackjack => "Blackjack!", :ready => "Waiting for action...", :stand => "Stand", :bust => "Bust hand!"}
 
 class Card
   attr_reader :suit, :face, :value
@@ -57,7 +59,7 @@ class Player
   def initialize(name)
     @name = name
     @hand = []
-    @stack = 1000
+    @stack = STARTING_STACK
     @stand = false
     @bet = 0
   end
@@ -241,31 +243,23 @@ players.each do |player|
     end
 
     case action
-    when 'stand'
+    when "stand"
       player.stand = true
-    when 'hit'
+    when "hit"
       dealer.hit(player)
-    when 'double'
+    when "double"
       player.double_bet
       dealer.hit(player)
       player.stand = true
-    when 'split'
+    when "split"
       # Do stuff
     else
-      raise 'Player action not found'
+      raise "Player action not found"
     end
   end
 
   puts player.summary
-  if player.status == :blackjack
-    puts "Blackjack!"
-  elsif player.status == :bust
-    puts "Bust!"
-  elsif player.status == :stand
-    puts "Stand."
-  else
-    raise "Unexpected player status"
-  end
+  puts STATUS_MESSAGE[player.status]
 
   puts "Hit enter to continue"
   gets
