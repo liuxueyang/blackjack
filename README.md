@@ -17,3 +17,4 @@ To run the test suite, you'll need Rspec:
 `gem install rspec`
 
 then simply run `rspec` in the blackjack directory
+

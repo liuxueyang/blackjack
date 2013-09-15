@@ -19,7 +19,6 @@ class Card
   def to_s
     "#{@face} of #{@suit}"
   end
-
 end
 
 class Deck
@@ -51,12 +50,13 @@ class Deck
     raise "No cards left in deck!" if @cards.length == 0
     @cards.pop
   end
+
 end
 
 
 class Player
   attr_reader :name
-  attr_accessor :hand, :stack, :stand, :bet
+  attr_accessor :hand, :stack, :stand, :bet, :parent
 
   def initialize(name)
     @name = name
@@ -80,12 +80,10 @@ class Player
   end
 
   def display_total
-    total = @hand.map(&:value).reduce(:+)
-    if has_ace? && total < 11
-      total += 10
-      total == 21 ? total.to_s : "#{total-10} or #{total}"
+    if has_ace? && hand_total != 21
+      "#{hand_total-10} or #{hand_total}"
     else
-      total.to_s
+      "#{hand_total}"
     end
   end
 
@@ -123,7 +121,15 @@ class Player
     end
     options
   end
+end
 
+class SplitPlayer < Player
+  attr_reader :parent
+
+  def initialize(name,parent)
+    super(name)
+    @parent = parent
+  end
 end
 
 class Dealer
@@ -135,7 +141,7 @@ class Dealer
   def deal(players)
     2.times do
       players.each do |player|
-        player.hand << @deck.take_card
+        player.hand << @deck.take_card if player.bet > 0
       end
       @dealer_player.hand << @deck.take_card
     end
@@ -204,14 +210,12 @@ players = []
 puts "Welcome to Blackjack!"
 puts "How many players?"
 num_players = gets.chomp.to_i
+clear_screen!
 num_players.times do |i|
   players << Player.new("Player #{i+1}")
 end
 
-clear_screen!
-
 dealer = Dealer.new
-dealer.deal(players)
 
 # Place bets
 # -------------------------
@@ -228,15 +232,18 @@ players.each do |player|
   player.stack -= bet
 end
 
+# Deal players
+# -------------------------
+dealer.deal(players)
 
 # Players take turn playing
 # -------------------------
 players.each do |player|
   next if player.bet == 0
   clear_screen!
+  puts player.summary
   while player.status == :ready do
     puts "Dealer is showing #{dealer.show}"
-    puts player.summary
     options = player.play_options
     action = ""
     until options.include?(action)
@@ -249,21 +256,30 @@ players.each do |player|
       player.stand = true
     when "hit"
       dealer.hit(player)
+      puts player.summary
     when "double"
       player.double_bet
       dealer.hit(player)
       player.stand = true
+      puts player.summary
     when "split"
-      # Do stuff
+      split_player = SplitPlayer.new(player.name+" second hand",player)
+      split_player.hand << player.hand.pop
+      split_player.bet = player.bet
+      player.stack -= player.bet
+      dealer.hit(player)
+      dealer.hit(split_player)
+      index = players.find_index(player)+1
+      players.insert(index, split_player)
+      puts player.summary
     else
       raise "Player action not found"
     end
   end
 
-  puts player.summary
   puts STATUS_MESSAGE[player.status]
 
-  puts "Hit enter to continue"
+  puts "Press enter to continue"
   gets
 end
 
