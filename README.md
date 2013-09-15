@@ -7,6 +7,6 @@ Simple game of command line blackjack. Can be played with multiple players, each
 - $1 minimum bet
 - Single deck
 - One hand per player
-- Dealer hits on soft 17
-- Blackjack pays 3 to 1
+- Dealer does not hit on soft 17
+- Blackjack pays 2 to 1
 - No insurance

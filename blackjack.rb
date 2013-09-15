@@ -1,12 +1,3 @@
-require 'pp'
-
-STARTING_STACK = 1000
-
-# Card = Struct.new(:suit, :face, :value) do
-#   def to_s
-#     "#{face} of #{suit}"
-#   end
-# end
 
 class Card
   attr_reader :suit, :face, :value
@@ -14,6 +5,10 @@ class Card
     @suit = suit
     @face = face
     @value = value
+  end
+
+  def is_ace?
+    @face == "Ace"
   end
 
   def to_s
@@ -62,18 +57,37 @@ class Player
   def initialize(name)
     @name = name
     @hand = []
-    @stack = STARTING_STACK
+    @stack = 1000
     @stand = false
     @bet = 0
   end
 
   def hand_total
-    @hand.map(&:value).reduce(:+)
+    total = @hand.map(&:value).reduce(:+)
+    if has_ace? && total <= 11
+      total += 10
+    end
+    total
+  end
+
+  def display_total
+    total = @hand.map(&:value).reduce(:+)
+    if has_ace? && total < 11
+      total += 10
+      total == 21 ? total.to_s : "#{total-10} or #{total}"
+    else
+      total.to_s
+    end
   end
 
   def summary
     @hand.reduce("====== #{@name} ======\n"){ |memo,card| memo + "#{card}\n" } +
-    "----------\nTotal: #{hand_total}\n#{status}\n"
+    "----------\nTotal: #{display_total}\n#{status}\n"
+  end
+
+  def has_ace?
+    @hand.each { |card| return true if card.is_ace? }
+    return false
   end
 
   def status
@@ -89,6 +103,18 @@ class Player
       raise "Unknown status error"
     end
   end
+
+  def play_options
+    options = ["hit","stand"]
+    if @hand.length == 2 && @stack > @bet
+      options << "double"
+      if @hand[0].face == @hand[1].face
+        options << "split"
+      end
+    end
+    options
+  end
+
 end
 
 class Dealer
@@ -124,15 +150,13 @@ class Dealer
 
   def winners(players)
     winning_players = []
-    if @dealer_player.status == :bust
-      players.each { |player| winning_players << player if player.status != :bust }
-    else
-      players.each do |player|
-        if player.hand_total > @dealer_player.hand_total && player.status != :bust
-          winning_players << player
-        elsif player.hand_total == @dealer_player.hand_total && player.status != :bust
-          push(player)
-        end
+    players.each do |player|
+      if @dealer_player.status == :bust && player.status != :bust
+        winning_players << player
+      elsif player.hand_total > @dealer_player.hand_total && player.status != :bust
+        winning_players << player
+      elsif player.hand_total == @dealer_player.hand_total && player.status != :bust
+        push(player)
       end
     end
 
@@ -162,7 +186,6 @@ def clear_screen!
   print "\e[H"
 end
 
-
 # Driver Code
 # ============
 
@@ -184,6 +207,7 @@ dealer.deal(players)
 # Place bets
 # -------------------------
 players.each do |player|
+  next if player.stack <= 0
   puts "#{player.name} - $#{player.stack}\nEnter bet amount (whole number or 0):"
   bet = -1
   until bet >= 0 && bet <= player.stack
@@ -204,24 +228,40 @@ players.each do |player|
   while player.status == :ready do
     puts "Dealer is showing #{dealer.show}"
     puts player.summary
+    options = player.play_options
     action = ""
-    until action == "h" || action == "s"
-      puts "Hit or stand? (type 'h' or 's')"
+    until options.include?(action)
+      puts "Choose one of the following: #{options.join(", ")}"
       action = gets.chomp
     end
-    player.stand = true if action == 's'
-    dealer.hit(player) if action == 'h'
+
+    case action
+    when 'stand'
+      player.stand = true
+    when 'hit'
+      dealer.hit(player)
+    when 'double'
+      player.stack -= player.bet
+      player.bet = player.bet*2
+      dealer.hit(player)
+      player.stand = true
+    when 'split'
+      # Do stuff
+    else
+      raise 'Player action not found'
+    end
   end
 
-  # if player.status == :blackjack
-  #   puts "Blackjack!"
-  # elsif player.status == :bust
-  #   puts "Bust!"
-  # elsif player.status == :stand
-  #   puts "Stand."
-  # else
-  #   raise "Unexpected player status"
-  # end
+  puts player.summary
+  if player.status == :blackjack
+    puts "Blackjack!"
+  elsif player.status == :bust
+    puts "Bust!"
+  elsif player.status == :stand
+    puts "Stand."
+  else
+    raise "Unexpected player status"
+  end
 
   puts "Hit enter to continue"
   gets
@@ -239,7 +279,7 @@ if winning_players.length == 0
   puts "No winners"
 else
   winning_players.each do |player|
-    puts "#{player.name} wins! Balance: $#{player.stack}"
+    puts "#{player.name} wins! Stack: $#{player.stack}"
   end
 end
 
