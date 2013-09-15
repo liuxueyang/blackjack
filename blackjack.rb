@@ -41,6 +41,7 @@ class Deck
   end
 
   def take_card
+    raise "No cards left in deck!" if @cards.length == 0
     @cards.pop
   end
 
@@ -106,6 +107,14 @@ class Dealer
     player.hand << @deck.take_card
   end
 
+  def show
+    @hand[0]
+  end
+
+  def play
+
+  end
+
 end
 
 
@@ -119,12 +128,14 @@ def play(player)
   declare_winners
 end
 
-def turn
-  # player is prompted to action until they are finished
+# Clear the screen and move cursor
+def clear_screen!
+  print "\e[2J"
+  print "\e[H"
 end
 
-def dealer_play
-  # Dealer plays according to rules to finish game
+def turn
+  # player is prompted to action until they are finished
 end
 
 def declare_winners
@@ -137,6 +148,7 @@ end
 # ============
 
 # Setup
+clear_screen!
 players = []
 puts "Welcome to Blackjack!"
 puts "How many players?"
@@ -149,8 +161,13 @@ dealer = Dealer.new
 dealer.deal(players)
 
 players.each do |player|
-  puts player.summary
+
+  player.summary
+
   while player.status == :ready do
+    clear_screen!
+    puts "Dealer is showing #{dealer.show}"
+    puts player.summary
     action = ""
     until action == "h" || action == "s"
       puts "Hit or stand? (type 'h' or 's')"
@@ -158,7 +175,6 @@ players.each do |player|
     end
     player.stand = true if action == 's'
     dealer.hit(player) if action == 'h'
-    puts player.summary
   end
 
   if player.status == :blackjack
@@ -170,9 +186,12 @@ players.each do |player|
   else
     raise "Unexpected player status"
   end
+
+  puts "Hit enter to continue"
+  gets
 end
 
-dealer_play
+dealer.play
 declare_winners
 
 
