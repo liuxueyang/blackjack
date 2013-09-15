@@ -50,13 +50,14 @@ end
 
 class Player
   attr_reader :name
-  attr_accessor :hand, :stack, :stand
+  attr_accessor :hand, :stack, :stand, :bet
 
   def initialize(name)
     @name = name
     @hand = []
     @stack = STARTING_STACK
     @stand = false
+    @bet = 0
   end
 
   def hand_total
@@ -91,7 +92,7 @@ end
 class Dealer
   def initialize
     @deck = Deck.new
-    @hand = []
+    @dealer_player = Player.new("Dealer")
   end
 
   def deal(players)
@@ -99,7 +100,7 @@ class Dealer
       players.each do |player|
         player.hand << @deck.take_card
       end
-      @hand << @deck.take_card
+      @dealer_player.hand << @deck.take_card
     end
   end
 
@@ -108,40 +109,42 @@ class Dealer
   end
 
   def show
-    @hand[0]
+    @dealer_player.hand[0]
   end
 
   def play
-
+    while @dealer_player.status == :ready
+      hit(@dealer_player)
+      @dealer_player.stand = true if @dealer_player.hand_total >= 17
+    end
+    @dealer_player.summary
   end
 
+  def winners(players)
+    if @dealer_player.status == :bust
+      # Everyone wins
+    else
+      # Check scores against @dealer_player.hand_total
+    end
+  end
+
+  def payout(player)
+    if player.status == :blackjack
+      player.stack += player.bet*2
+    else
+      player.stack += player.bet
+    end
+  end
+
+
 end
 
-
-
-#=========== METHODS TO GO IN A MODULE? ================
-
-
-def play(player)
-  turn
-  dealer_play
-  declare_winners
-end
 
 # Clear the screen and move cursor
 def clear_screen!
   print "\e[2J"
   print "\e[H"
 end
-
-def turn
-  # player is prompted to action until they are finished
-end
-
-def declare_winners
-  # Check status of players and dealer to establish winners
-end
-#=======================================================
 
 
 # Driver Code
@@ -157,15 +160,31 @@ num_players.times do |i|
   players << Player.new("Player #{i+1}")
 end
 
+clear_screen!
+
 dealer = Dealer.new
 dealer.deal(players)
 
+# Place bets
+# -------------------------
 players.each do |player|
+  puts "#{player.name} - $#{player.stack}\nEnter bet amount (whole number or 0):"
+  bet = -1
+  until bet >= 0 && bet <= player.stack
+    bet = gets.chomp.to_i
+    puts "You don't have enough money! Enter new amount" if bet > player.stack
+    puts "No bet placed this game" if bet == 0
+  end
+  player.bet = bet
+end
 
-  player.summary
 
+# Players take turn playing
+# -------------------------
+players.each do |player|
+  next if player.bet == 0
+  clear_screen!
   while player.status == :ready do
-    clear_screen!
     puts "Dealer is showing #{dealer.show}"
     puts player.summary
     action = ""
@@ -191,7 +210,8 @@ players.each do |player|
   gets
 end
 
-dealer.play
-declare_winners
+clear_screen!
+puts dealer.play
+dealer.winners(players)
 
 
