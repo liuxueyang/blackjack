@@ -62,6 +62,11 @@ class Player
     @bet = 0
   end
 
+  def double_bet
+    @stack -= @bet
+    @bet = @bet*2
+  end
+
   def hand_total
     total = @hand.map(&:value).reduce(:+)
     if has_ace? && total <= 11
@@ -241,8 +246,7 @@ players.each do |player|
     when 'hit'
       dealer.hit(player)
     when 'double'
-      player.stack -= player.bet
-      player.bet = player.bet*2
+      player.double_bet
       dealer.hit(player)
       player.stand = true
     when 'split'
