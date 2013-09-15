@@ -49,12 +49,13 @@ end
 
 class Player
   attr_reader :name
-  attr_accessor :hand, :stack
+  attr_accessor :hand, :stack, :status
 
   def initialize(name)
     @name = name
     @hand = []
     @stack = STARTING_STACK
+    @status = :ready
   end
 
   def hand_total
@@ -93,20 +94,36 @@ class Dealer
 end
 
 
-class Game
-  def initialize(players)
-    @dealer = Dealer.new
-    @players = players
-    @dealer.deal(players)
-  end
 
+#=========== METHODS TO GO IN A MODULE? ================
+def get_action(player)
+  # Prompt user to hit or stand
 end
+
+def play(player)
+  turn
+  dealer_play
+  declare_winners
+end
+
+def turn
+  # player is prompted to action until they are finished
+end
+
+def dealer_play
+  # Dealer plays according to rules to finish game
+end
+
+def declare_winners
+  # Check status of players and dealer to establish winners
+end
+#=======================================================
 
 
 # Driver Code
 # ============
 
-
+# Setup
 players = []
 puts "Welcome to Blackjack!"
 puts "How many players?"
@@ -114,7 +131,18 @@ num_players = gets.chomp.to_i
 num_players.times do |i|
   players << Player.new("Player #{i+1}")
 end
-game = Game.new(players)
+
+dealer = Dealer.new
+dealer.deal(players)
+
+players.each do |player|
+  action = get_action(player)
+  # game.action if player.status != :stand || :bust
+end
+
+dealer_play
+declare_winners
+
 
 
 puts players[0].summary
