@@ -1,5 +1,8 @@
 STARTING_STACK = 1000
-STATUS_MESSAGE = {:blackjack => "Blackjack!", :ready => "Waiting for action...", :stand => "Stand", :bust => "Bust hand!"}
+STATUS_MESSAGE = {:blackjack => "Blackjack!",
+                  :ready => "Waiting for action...",
+                  :stand => "Stand",
+                  :bust => "Bust hand!"}
 
 class Card
   attr_reader :suit, :face, :value
@@ -48,7 +51,6 @@ class Deck
     raise "No cards left in deck!" if @cards.length == 0
     @cards.pop
   end
-
 end
 
 
