@@ -1,5 +1,5 @@
 require 'rspec'
-require './config'
+require 'spec_config'
 require './card'
 require './shoe'
 require './player'
