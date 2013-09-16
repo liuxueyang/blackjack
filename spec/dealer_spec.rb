@@ -11,27 +11,34 @@ describe Dealer do
       subject.deal(players)
       players[0].hand.length.should == 2
     end
+
+    it 'only deals if player has bet' do
+      players = [Player.new("Test Player")]
+      players[0].bet = 0
+      subject.deal(players)
+      players[0].hand.length.should == 0
+    end
   end
 
   describe '#hit' do
-    it 'does_this' do
-      pending
+    it 'gives player a new card' do
+      # player = double()
+      # player.stub(:hand){[]}
+      # shoe = double()
+      # shoe.stub(:take_card){"card"}
+      # subject.hit(player)
+      # player.hand.should_receive("card")
     end
   end
 
   describe '#show' do
     it 'reveals dealers first card' do
-      pending
+      subject.stub(:hand) {[Card.new('Hearts','3',3),Card.new('Hearts','5',5)]}
+      subject.show.to_s.should == "3 of Hearts"
     end
   end
 
   describe '#play' do
-    it 'does_this' do
-      pending
-    end
-  end
-
-  describe '#summary' do
     it 'does_this' do
       pending
     end
@@ -50,8 +57,11 @@ describe Dealer do
   end
 
   describe '#push' do
-    it 'does_this' do
-      pending
+    it 'adds bet back to player stack' do
+      # player =g double
+      # player.stub(:stack) {10}
+      # player.stub(:bet) {10}
+      # subject.push(player).should == 20
     end
   end
 
