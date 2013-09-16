@@ -4,7 +4,7 @@ require 'shoe'
 require 'player'
 require 'dealer'
 require 'helpers'
-require 'game_module'
+require 'game'
 
 # Setup
 clear_screen!
