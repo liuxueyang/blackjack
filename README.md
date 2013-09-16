@@ -2,14 +2,13 @@
 
 Run `ruby blackjack.rb`
 
-Game of command line blackjack. Can be played with multiple players, each player starts with $1000.
+Game of command line blackjack. Can be played with multiple players. Change starting bet and number of decks in config.rb
 
 - $1 minimum bet
 - One hand per player
 - Dealer does not hit on soft 17
-- Blackjack pays 2 to 1
+- Blackjack pays 3 to 2
 - No insurance
-- Can only split once
 
 To run the test suite, you'll need Rspec:
 
