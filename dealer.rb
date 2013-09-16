@@ -1,7 +1,8 @@
-class Dealer
+class Dealer < Player
+
   def initialize
+    super("Dealer")
     @shoe = Shoe.new
-    @dealer_player = Player.new("Dealer")
   end
 
   def deal(players)
@@ -9,7 +10,7 @@ class Dealer
       players.each do |player|
         player.hand << @shoe.take_card if player.bet > 0
       end
-      @dealer_player.hand << @shoe.take_card
+      hand << @shoe.take_card
     end
   end
 
@@ -18,31 +19,27 @@ class Dealer
   end
 
   def show
-    @dealer_player.hand[0]
+    hand[0]
   end
 
   def play
-    while @dealer_player.status == :ready
-      if @dealer_player.hand_total < 17
-        hit(@dealer_player)
+    while status == :ready
+      if hand_total < 17
+        hit(self)
       else
-        @dealer_player.stand = true
+        stand = true
       end
     end
-  end
-
-  def summary
-    @dealer_player.summary
   end
 
   def winners(players)
     winning_players = []
     players.each do |player|
-      if @dealer_player.status == :bust && player.status != :bust
+      if status == :bust && player.status != :bust
         winning_players << player
-      elsif player.hand_total > @dealer_player.hand_total && player.status != :bust
+      elsif player.hand_total > hand_total && player.status != :bust
         winning_players << player
-      elsif player.hand_total == @dealer_player.hand_total && player.status != :bust
+      elsif player.hand_total == hand_total && player.status != :bust
         push(player)
       end
     end
