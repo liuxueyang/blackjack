@@ -14,7 +14,7 @@ module Game
   def self.place_bets(players)
     players.each do |player|
       next if player.stack <= 0
-      puts "#{player.name} - $#{player.stack}\nEnter bet amount (whole number or 0):"
+      puts "#{player.name} stack: $#{player.stack}\nEnter bet amount (whole number or 0):"
       bet = -1
       until bet >= 0 && bet <= player.stack
         bet = gets.chomp.to_i
@@ -76,12 +76,12 @@ module Game
   end
 
   def self.determine_winners(dealer,players)
-    winning_players = dealer.winners(players) # add secret sauce for split hands
+    winning_players = dealer.winners(players)
     players.each do |player|
       if winning_players.include?(player)
         puts "#{player.name} won! Stack: $#{player.stack}"
       else
-        puts "#{player.name} lost! Stack: $#{player.stack}"
+        puts "#{player.name}: Stack: $#{player.stack}"
       end
     end
   end
@@ -90,6 +90,7 @@ module Game
     players.each do |player|
       players.delete(player) if player.class == SplitPlayer
       player.hand.clear
+      player.bet = 0
       player.stand = false
     end
   end
@@ -99,13 +100,15 @@ module Game
     players.each do |player|
       response = ""
       until response == "y" || response == "n"
-        puts "#{player.name}, you have $#{player.stack}. Play again? ('y' or 'n')"
+        puts "#{player.name}, play again? ('y' or 'n')"
         response = gets.chomp
       end
       if response == "n"
         puts "You cashed out with $#{player.stack}"
-      else
+      elsif response == "y" && player.stack > 0
         playing_again << player
+      else
+        puts "You're out of money!"
       end
     end
     playing_again

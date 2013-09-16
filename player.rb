@@ -26,15 +26,15 @@ class Player
   def display_total
     total = @hand.map(&:value).reduce(:+)
     if has_ace? && total <= 11
-      "#{hand_total} or #{hand_total+10}"
+      "#{total} or #{total+10}"
     else
-      "#{hand_total}"
+      "#{total}"
     end
   end
 
   def summary
     @hand.reduce("====== #{@name} ======\n"){ |memo,card| memo + "#{card}\n" } +
-    "----------\nTotal: #{display_total}\n#{status}\n"
+    "----------\nTotal: #{display_total}\n"
   end
 
   def has_ace?
