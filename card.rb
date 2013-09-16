@@ -7,10 +7,10 @@ class Card
   end
 
   def is_ace?
-    @face == "Ace"
+    face == "Ace"
   end
 
   def to_s
-    "#{@face} of #{@suit}"
+    "#{face} of #{suit}"
   end
 end

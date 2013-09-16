@@ -16,8 +16,13 @@ describe Card do
   end
 
   describe '#is_ace?' do
+    it 'returns false for non-ace cards' do
+      subject.is_ace?.should == false
+    end
+
     it 'returns true for ace cards' do
-      pending
+      test_ace = Card.new('Hearts','Ace',1)
+      test_ace.is_ace?.should == true
     end
   end
 

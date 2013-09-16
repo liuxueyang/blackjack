@@ -27,7 +27,7 @@ class Dealer < Player
       if hand_total < 17
         hit(self)
       else
-        stand = true
+        @stand = true
       end
     end
   end

@@ -62,10 +62,11 @@ module Game
         end
       end
 
-      puts STATUS_MESSAGE[player.status]
 
+      puts STATUS_MESSAGE[player.status]
       puts "Press enter to continue"
       gets
+
     end
   end
 

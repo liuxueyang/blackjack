@@ -28,8 +28,9 @@ describe Player do
   end
 
   describe '#has_ace?' do
-    it 'does_this' do
-      pending
+    it 'checks hand for ace card' do
+      @hand.stub(:ace).and_return([Card.new('Hearts','3',3),Card.new('Hearts','Ace',1)])
+      hand.has_ace?.should == true
     end
   end
 

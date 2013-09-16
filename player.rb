@@ -17,7 +17,8 @@ class Player
 
   def hand_total
     raise "No cards in hand" if hand.length == 0
-    total = hand.map(&:value).reduce(:+)
+
+    total = hand.map(&:value).inject{|sum,x| sum + x }
     if has_ace? && total <= 11
       total += 10
     end
@@ -44,6 +45,7 @@ class Player
   end
 
   def status
+    puts "HAND TOTAL: #{hand_total} STAND: #{stand}"
     if hand_total == 21 && hand.length == 2
       :blackjack
     elsif hand_total > 21
