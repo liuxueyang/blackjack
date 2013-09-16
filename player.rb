@@ -11,8 +11,8 @@ class Player
   end
 
   def double_bet
-    stack -= bet
-    bet = bet*2
+    @stack -= bet
+    @bet = bet*2
   end
 
   def hand_total
@@ -45,7 +45,6 @@ class Player
   end
 
   def status
-    puts "HAND TOTAL: #{hand_total} STAND: #{stand}"
     if hand_total == 21 && hand.length == 2
       :blackjack
     elsif hand_total > 21

@@ -1,4 +1,5 @@
 class Dealer < Player
+  attr_reader :shoe
 
   def initialize
     super("Dealer")
@@ -8,14 +9,14 @@ class Dealer < Player
   def deal(players)
     2.times do
       players.each do |player|
-        player.hand << @shoe.take_card if player.bet > 0
+        player.hand << shoe.take_card if player.bet > 0
       end
-      hand << @shoe.take_card
+      hand << shoe.take_card
     end
   end
 
   def hit(player)
-    player.hand << @shoe.take_card
+    player.hand << shoe.take_card
   end
 
   def show
