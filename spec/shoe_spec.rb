@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe Shoe do
 
-  NUMBER_OF_DECKS = 2
   subject { Shoe.new }
 
   context 'after creation' do
