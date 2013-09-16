@@ -1,0 +1,8 @@
+require 'rspec'
+require './config'
+require './card'
+require './shoe'
+require './player'
+require './dealer'
+require './helpers'
+require './game_module'
