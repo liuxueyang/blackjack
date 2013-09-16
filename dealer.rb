@@ -23,9 +23,15 @@ class Dealer
 
   def play
     while @dealer_player.status == :ready
-      hit(@dealer_player) if @dealer_player.hand_total < 17
-      @dealer_player.stand = true if @dealer_player.hand_total >= 17
+      if @dealer_player.hand_total < 17
+        hit(@dealer_player)
+      else
+        @dealer_player.stand = true
+      end
     end
+  end
+
+  def summary
     @dealer_player.summary
   end
 
@@ -55,6 +61,14 @@ class Dealer
 
   def push(player)
     player.stack += player.bet
+  end
+
+  def split_hand(player, split_player)
+    split_player.hand << player.hand.pop
+    split_player.bet = player.bet
+    player.stack -= player.bet
+    hit(player)
+    hit(split_player)
   end
 
 end
