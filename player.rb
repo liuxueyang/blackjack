@@ -24,8 +24,9 @@ class Player
   end
 
   def display_total
-    if has_ace? && total < 11
-      "#{hand_total-10} or #{hand_total}"
+    total = @hand.map(&:value).reduce(:+)
+    if has_ace? && total <= 11
+      "#{hand_total} or #{hand_total+10}"
     else
       "#{hand_total}"
     end
@@ -73,6 +74,6 @@ class SplitPlayer < Player
 
   def initialize(name,parent)
     super(name)
-    @parent = parent
+    parent = parent
   end
 end

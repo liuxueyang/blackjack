@@ -48,6 +48,7 @@ class Dealer
     end
 
     winning_players.each { |player| payout(player) }
+    consolidate_split_hands(winning_players)
     winning_players
   end
 
@@ -69,6 +70,14 @@ class Dealer
     player.stack -= player.bet
     hit(player)
     hit(split_player)
+  end
+
+  def consolidate_split_hands(winning_players)
+    winning_players.each do |player|
+      if player.class == SplitPlayer
+        player.parent.stack += (player.stack-STARTING_STACK)
+      end
+    end
   end
 
 end

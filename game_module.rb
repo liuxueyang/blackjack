@@ -7,6 +7,8 @@ module Game
     play_hands(dealer,players)
     dealer_play(dealer)
     determine_winners(dealer,players)
+    reset(players)
+    next_round(players)
   end
 
   def self.place_bets(players)
@@ -83,5 +85,41 @@ module Game
       end
     end
   end
+
+  def self.reset(players)
+    players.each do |player|
+      players.delete(player) if player.class == SplitPlayer
+      player.hand.clear
+      player.stand = false
+    end
+  end
+
+  def self.playing_again(players)
+    playing_again = []
+    players.each do |player|
+      response = ""
+      until response == "y" || response == "n"
+        puts "#{player.name}, you have $#{player.stack}. Play again? ('y' or 'n')"
+        response = gets.chomp
+      end
+      if response == "n"
+        puts "You cashed out with $#{player.stack}"
+      else
+        playing_again << player
+      end
+    end
+    playing_again
+  end
+
+  def self.next_round(players)
+    next_round_players = playing_again(players)
+    if next_round_players.length > 0
+      play(next_round_players)
+    else
+      puts "Thanks for playing!"
+    end
+  end
+
+
 
 end
