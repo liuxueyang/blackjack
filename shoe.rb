@@ -1,4 +1,3 @@
-
 class Shoe
   attr_reader :cards
 
