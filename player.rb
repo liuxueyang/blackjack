@@ -18,7 +18,7 @@ class Player
   def hand_total
     raise "No cards in hand" if hand.length == 0
 
-    total = hand.map(&:value).inject{|sum,x| sum + x }
+    total = hand.map(&:value).reduce(:+)
     if has_ace? && total <= 11
       total += 10
     end
@@ -29,6 +29,8 @@ class Player
     total = hand.map(&:value).reduce(:+)
     if has_ace? && total <= 11
       "#{total} or #{total+10}"
+    elsif total == 21
+      "#{total+10}"
     else
       "#{total}"
     end
