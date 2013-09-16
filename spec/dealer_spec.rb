@@ -25,7 +25,7 @@ describe Dealer do
     end
   end
 
-  describe '#plauy' do
+  describe '#play' do
     it 'does_this' do
       pending
     end

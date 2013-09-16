@@ -62,10 +62,10 @@ module Game
         end
       end
 
-    puts STATUS_MESSAGE[player.status]
+      puts STATUS_MESSAGE[player.status]
 
-    puts "Press enter to continue"
-    gets
+      puts "Press enter to continue"
+      gets
     end
   end
 
@@ -81,7 +81,7 @@ module Game
       if winning_players.include?(player)
         puts "#{player.name} won! Stack: $#{player.stack}"
       else
-        puts "#{player.name}: Stack: $#{player.stack}"
+        puts "#{player.name} no win. Stack: $#{player.stack}"
       end
     end
   end
