@@ -36,6 +36,7 @@ class Dealer < Player
   def winners(players)
     winning_players = []
     players.each do |player|
+      next if player.bet == 0
       if status == :bust && player.status != :bust
         winning_players << player
       elsif player.hand_total > hand_total && player.status != :bust

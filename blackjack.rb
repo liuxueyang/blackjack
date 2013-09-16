@@ -19,6 +19,7 @@ num_players.times do |i|
   players << Player.new("Player #{i+1}")
 end
 
-Game::play(players)
+blackjack = Game.new(players)
+blackjack.play
 
 

@@ -1,17 +1,23 @@
-module Game
+class Game
+  attr_reader :dealer
+  attr_accessor :players
 
-  def self.play(players)
-    dealer = Dealer.new
-    place_bets(players)
-    dealer.deal(players)
-    play_hands(dealer,players)
-    dealer_play(dealer)
-    determine_winners(dealer,players)
-    reset(players)
-    next_round(players)
+  def initialize(players)
+    @dealer = Dealer.new
+    @players = players
   end
 
-  def self.place_bets(players)
+  def play
+    place_bets
+    dealer.deal(players)
+    play_hands
+    dealer_play
+    determine_winners
+    reset
+    next_round
+  end
+
+  def place_bets
     players.each do |player|
       next if player.stack <= 0
       puts "#{player.name} stack: $#{player.stack}\nEnter bet amount (whole number or 0):"
@@ -26,7 +32,7 @@ module Game
     end
   end
 
-  def self.play_hands(dealer,players)
+  def play_hands
     players.each do |player|
       next if player.bet == 0
       clear_screen!
@@ -70,13 +76,13 @@ module Game
     end
   end
 
-  def self.dealer_play(dealer)
+  def dealer_play
     clear_screen!
     dealer.play
     puts dealer.summary
   end
 
-  def self.determine_winners(dealer,players)
+  def determine_winners
     winning_players = dealer.winners(players)
     players.each do |player|
       if winning_players.include?(player)
@@ -87,7 +93,7 @@ module Game
     end
   end
 
-  def self.reset(players)
+  def reset
     players.each do |player|
       players.delete(player) if player.class == SplitPlayer
       player.hand.clear
@@ -96,7 +102,7 @@ module Game
     end
   end
 
-  def self.playing_again(players)
+  def playing_again
     playing_again = []
     players.each do |player|
       response = ""
@@ -115,10 +121,10 @@ module Game
     playing_again
   end
 
-  def self.next_round(players)
-    next_round_players = playing_again(players)
-    if next_round_players.length > 0
-      play(next_round_players)
+  def next_round
+    players = playing_again
+    if players.length > 0
+      play
     else
       puts "Thanks for playing!"
     end
