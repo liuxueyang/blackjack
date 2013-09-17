@@ -57,6 +57,14 @@ describe Dealer do
       subject.stub(:hand_total){19}
       subject.winners(@players).should == @players
     end
+
+    it 'returns empty when nobody wins' do
+      @player.stub(:status){:stand}
+      @player.stub(:hand_total){15}
+      subject.stub(:status){:stand}
+      subject.stub(:hand_total){19}
+      subject.winners(@players).should == []
+    end
   end
 
   describe '#payout' do
