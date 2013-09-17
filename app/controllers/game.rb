@@ -85,15 +85,14 @@ class Game
 
   def dealer_play
     View.clear_screen!
-    View.summary(dealer)
     while dealer.status == :ready
       if dealer.hand_total < 17
         dealer.hit(dealer)
       else
         dealer.stand = true
       end
-      View.summary(dealer)
     end
+    View.summary(dealer)
   end
 
   def determine_winners
