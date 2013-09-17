@@ -6,8 +6,6 @@ class Game
     clear_screen!
     @dealer = Dealer.new
     @players = []
-    puts open("logo.txt").read
-    puts "Welcome to Blackjack!"
     puts "How many players?"
     num_players = gets.chomp.to_i
     clear_screen!
