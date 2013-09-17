@@ -78,6 +78,6 @@ class SplitPlayer < Player
 
   def initialize(name,parent)
     super(name)
-    parent = parent
+    @parent = parent
   end
 end

@@ -3,20 +3,6 @@ require 'spec_helper'
 describe Card do
   subject { Card.new('Hearts','3',3) }
 
-  context 'readable attributes' do
-    it 'has readable suit' do
-      subject.suit.should == 'Hearts'
-    end
-
-    it 'has readable face' do
-      subject.face.should == '3'
-    end
-
-    it 'has readable value' do
-      subject.value.should == 3
-    end
-  end
-
   describe '#is_ace?' do
     it 'returns false for non-ace cards' do
       subject.is_ace?.should == false
