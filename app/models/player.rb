@@ -36,11 +36,6 @@ class Player
     end
   end
 
-  def summary
-    hand.reduce("====== #{name} ======\n"){ |memo,card| memo + "#{card}\n" } +
-    "----------\nTotal: #{display_total}\n"
-  end
-
   def has_ace?
     hand.each { |card| return true if card.is_ace? }
     return false

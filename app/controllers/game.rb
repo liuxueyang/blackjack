@@ -29,12 +29,12 @@ class Game
   def place_bets
     players.each do |player|
       next if player.stack <= 0
-      View.ask_bet(player.name,player.stack)
       bet = -1
       until bet >= 0 && bet <= player.stack
+        View.ask_bet(player.name,player.stack)
         bet = gets.chomp.to_i
-        puts "You don't have enough money! Enter new amount" if bet > player.stack
-        puts "No bet placed this game" if bet == 0
+        View.no_money if bet > player.stack
+        View.no_bet if bet == 0
       end
       player.bet = bet
       player.stack -= bet
@@ -45,13 +45,13 @@ class Game
     players.each do |player|
       next if player.bet == 0
       View.clear_screen!
-      puts player.summary
+      View.summary(player.name,player.hand,player.display_total)
       while player.status == :ready do
-        puts "Dealer is showing #{dealer.show}"
+        View.dealer_showing(dealer.show)
         options = player.play_options
         action = ""
         until options.include?(action)
-          puts "Choose one of the following: #{options.join(", ")}"
+          View.action(options.join(", "))
           action = gets.chomp
         end
 
@@ -60,25 +60,24 @@ class Game
           player.stand = true
         when "hit"
           dealer.hit(player)
-          puts player.summary
+          View.summary(player.name,player.hand,player.display_total)
         when "double"
           player.double_bet
           dealer.hit(player)
           player.stand = true
-          puts player.summary
+          View.summary(player.name,player.hand,player.display_total)
         when "split"
           split_player = SplitPlayer.new(player.name+" second hand",player)
           dealer.split_hand(player,split_player)
           index = players.find_index(player)+1
           players.insert(index, split_player)
-          puts player.summary
+          View.summary(player.name,player.hand,player.display_total)
         else
           raise "Player action not found"
         end
       end
 
-      puts STATUS_MESSAGE[player.status]
-      puts "Press enter to continue"
+      View.end_turn(STATUS_MESSAGE[player.status])
       gets
 
     end
@@ -87,17 +86,14 @@ class Game
   def dealer_play
     View.clear_screen!
     dealer.play
-    puts dealer.summary
+    View.summary(dealer.name,dealer.hand,dealer.display_total)
   end
 
   def determine_winners
     winning_players = dealer.winners(players)
     players.each do |player|
-      if winning_players.include?(player)
-        puts "#{player.name} won! Stack: $#{player.stack}"
-      else
-        puts "#{player.name} no win. Stack: $#{player.stack}"
-      end
+      result = winning_players.include?(player) ? "WON!" : "did not win."
+      View.announce_result("won!",player.name,player.stack)
     end
   end
 
@@ -115,15 +111,15 @@ class Game
     players.each do |player|
       response = ""
       until response == "y" || response == "n"
-        puts "#{player.name}, play again? ('y' or 'n')"
+        View.play_again(player.name)
         response = gets.chomp
       end
       if response == "n"
-        puts "You cashed out with $#{player.stack}"
+        View.cash_out(player.stack)
       elsif response == "y" && player.stack > 0
         playing_again << player
       else
-        puts "You're out of money!"
+        View.no_money
       end
     end
     playing_again
@@ -134,7 +130,7 @@ class Game
     if players.length > 0
       play
     else
-      puts "Thanks for playing!"
+      View.goodbye
     end
   end
 end
