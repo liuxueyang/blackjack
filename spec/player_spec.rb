@@ -51,18 +51,6 @@ describe Player do
     end
   end
 
-  describe '#summary' do
-    it 'shows cards and total' do
-      subject.stub(:hand) {[Card.new('Hearts','3',3),Card.new('Hearts','5',5)]}
-      subject.summary.to_s.should == "====== Test Player ======\n3 of Hearts\n5 of Hearts\n----------\nTotal: 8\n"
-    end
-
-    it 'shows cards and two totals when ace present' do
-      subject.stub(:hand) {[Card.new('Hearts','3',3),Card.new('Hearts','Ace',1)]}
-      subject.summary.to_s.should == "====== Test Player ======\n3 of Hearts\nAce of Hearts\n----------\nTotal: 4 or 14\n"
-    end
-  end
-
   describe '#has_ace?' do
     it 'true for ace in hand' do
       subject.stub(:hand) {[Card.new('Hearts','3',3),Card.new('Hearts','Ace',1)]}
