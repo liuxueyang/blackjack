@@ -35,12 +35,13 @@ Welcome to Blackjack!
     puts "No bet placed this game"
   end
 
-  def summary(name,hand,display_total)
-    puts "====== #{name} ======"
+  def summary(player)
+    puts "====== #{player.name} ======"
     puts "Cards:"
-    hand.each { |card| puts "   #{card}" }
+    player.hand.each { |card| puts "   #{card}" }
     puts "----------------------"
-    puts "Hand total: #{display_total}"
+    puts "Hand total: #{player.display_total}"
+    puts "STATUS: #{player.status}"
     puts
   end
 
@@ -59,8 +60,8 @@ Welcome to Blackjack!
     puts "Press enter to continue"
   end
 
-  def announce_result(result,name,stack)
-    puts "#{name} #{result} Current stack: $#{stack}"
+  def announce_result(result,name,total,stack)
+    puts "#{name} #{result} Hand: #{total}, New stack: $#{stack}"
   end
 
   def play_again(name)

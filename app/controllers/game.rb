@@ -45,7 +45,7 @@ class Game
     players.each do |player|
       next if player.bet == 0
       View.clear_screen!
-      View.summary(player.name,player.hand,player.display_total)
+      View.summary(player)
       while player.status == :ready do
         View.dealer_showing(dealer.show)
         options = player.play_options
@@ -60,18 +60,18 @@ class Game
           player.stand = true
         when "hit"
           dealer.hit(player)
-          View.summary(player.name,player.hand,player.display_total)
+          View.summary(player)
         when "double"
           player.double_bet
           dealer.hit(player)
           player.stand = true
-          View.summary(player.name,player.hand,player.display_total)
+          View.summary(player)
         when "split"
           split_player = SplitPlayer.new(player.name+" second hand",player)
           dealer.split_hand(player,split_player)
           index = players.find_index(player)+1
           players.insert(index, split_player)
-          View.summary(player.name,player.hand,player.display_total)
+          View.summary(player)
         else
           raise "Player action not found"
         end
@@ -85,15 +85,22 @@ class Game
 
   def dealer_play
     View.clear_screen!
-    dealer.play
-    View.summary(dealer.name,dealer.hand,dealer.display_total)
+    View.summary(dealer)
+    while dealer.status == :ready
+      if dealer.hand_total < 17
+        dealer.hit(dealer)
+      else
+        dealer.stand = true
+      end
+      View.summary(dealer)
+    end
   end
 
   def determine_winners
     winning_players = dealer.winners(players)
     players.each do |player|
       result = winning_players.include?(player) ? "WON!" : "did not win."
-      View.announce_result("won!",player.name,player.stack)
+      View.announce_result("won!",player.name,player.display_total,player.stack)
     end
   end
 
@@ -104,6 +111,7 @@ class Game
       player.bet = 0
       player.stand = false
     end
+    @dealer = Dealer.new
   end
 
   def playing_again

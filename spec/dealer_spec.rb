@@ -38,14 +38,6 @@ describe Dealer do
     end
   end
 
-  describe '#play' do
-    it 'stands when 17 or greater' do
-      subject.stub(:hand_total) {17}
-      subject.play
-      subject.stand.should == true
-    end
-  end
-
   describe '#winners' do
     it 'skips player if they havent bet' do
       @player.bet = 0

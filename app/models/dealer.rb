@@ -23,16 +23,6 @@ class Dealer < Player
     hand[0]
   end
 
-  def play
-    while status == :ready
-      if hand_total < 17
-        hit(self)
-      else
-        @stand = true
-      end
-    end
-  end
-
   def winners(players)
     winning_players = []
     players.each do |player|
