@@ -45,6 +45,11 @@ describe Player do
       subject.display_total.should == '4 or 14'
     end
 
+    it 'shows 1 options with ace and 21' do
+      subject.stub(:hand) {[Card.new('Hearts','10',10),Card.new('Hearts','Ace',1)]}
+      subject.display_total.should == '21'
+    end
+
     it 'shows 1 option with ace and total over 21' do
       subject.stub(:hand) {[Card.new('Hearts','3',3),Card.new('Hearts','Ace',1),Card.new('Hearts','Jack',10)]}
       subject.display_total.should == '14'

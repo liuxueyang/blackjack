@@ -27,9 +27,9 @@ class Player
 
   def display_total
     total = hand.map(&:value).reduce(:+)
-    if has_ace? && total <= 11
+    if has_ace? && total < 11
       "#{total} or #{total+10}"
-    elsif total == 21
+    elsif has_ace? && total == 11
       "#{total+10}"
     else
       "#{total}"
