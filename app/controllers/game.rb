@@ -51,7 +51,7 @@ class Game
         options = player.play_options
         action = ""
         until options.include?(action)
-          View.action(options.join(", "))
+          View.action(options)
           action = gets.chomp
         end
 
@@ -109,17 +109,22 @@ class Game
   def playing_again
     playing_again = []
     players.each do |player|
-      response = ""
-      until response == "y" || response == "n"
+      loop do
         View.play_again(player.name)
         response = gets.chomp
-      end
-      if response == "n"
-        View.cash_out(player.stack)
-      elsif response == "y" && player.stack > 0
-        playing_again << player
-      else
-        View.no_money
+        case
+        when response == "y" && player.stack > 0
+          playing_again << player
+          break
+        when response == "n"
+          View.cash_out(player.stack)
+          break
+        when (response == "y" || response == "n") && player.stack == 0
+          View.no_money
+          break
+        else
+          View.action(["y","n"])
+        end
       end
     end
     playing_again

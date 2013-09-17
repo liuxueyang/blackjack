@@ -51,7 +51,7 @@ Welcome to Blackjack!
   end
 
   def action(options)
-    puts "Choose one of the following: #{options}"
+    puts "Choose enter of the following: #{options.join(", ")}"
   end
 
   def end_turn(status)
