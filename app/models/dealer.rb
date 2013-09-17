@@ -36,12 +36,12 @@ class Dealer < Player
   def winners(players)
     winning_players = []
     players.each do |player|
-      next if player.bet == 0
-      if status == :bust && player.status != :bust
+      next if player.bet == 0 || player.status == :bust
+      if status == :bust
         winning_players << player
-      elsif player.hand_total > hand_total && player.status != :bust
+      elsif player.hand_total > hand_total
         winning_players << player
-      elsif player.hand_total == hand_total && player.status != :bust
+      elsif player.hand_total == hand_total
         push(player)
       end
     end

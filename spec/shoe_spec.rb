@@ -4,21 +4,20 @@ describe Shoe do
 
   subject { Shoe.new }
 
-  context 'after creation' do
-    it 'has 104 cards for 2 decks' do
-      subject.cards.count.should == 104
-    end
-  end
-
   describe '#fill_shoe' do
-    it 'creates decks of cards to fill shoe' do
-      pending
+    it 'creates 2 decks of cards to fill shoe' do
+      subject.cards.count.should == 104
     end
   end
 
   describe '#generate_deck' do
     it 'creates a deck of unique cards' do
-      pending
+      deck = subject.generate_deck
+      deck.length.should == deck.uniq.length
+    end
+
+    it 'creates a deck of 52 cards' do
+      subject.generate_deck.count.should == 52
     end
   end
 

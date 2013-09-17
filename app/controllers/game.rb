@@ -1,18 +1,19 @@
 class Game
+  include View
   attr_reader :dealer
   attr_accessor :players
 
   def initialize
-    clear_screen!
+    View.clear_screen!
+    View.welcome
     @dealer = Dealer.new
     @players = []
-    puts "How many players?"
+    View.ask_players
     num_players = gets.chomp.to_i
-    clear_screen!
+    View.clear_screen!
     num_players.times do |i|
       @players << Player.new("Player #{i+1}")
     end
-
   end
 
   def play
@@ -28,7 +29,7 @@ class Game
   def place_bets
     players.each do |player|
       next if player.stack <= 0
-      puts "#{player.name} stack: $#{player.stack}\nEnter bet amount (whole number or 0):"
+      View.ask_bet(player.name,player.stack)
       bet = -1
       until bet >= 0 && bet <= player.stack
         bet = gets.chomp.to_i
@@ -43,7 +44,7 @@ class Game
   def play_hands
     players.each do |player|
       next if player.bet == 0
-      clear_screen!
+      View.clear_screen!
       puts player.summary
       while player.status == :ready do
         puts "Dealer is showing #{dealer.show}"
@@ -76,7 +77,6 @@ class Game
         end
       end
 
-
       puts STATUS_MESSAGE[player.status]
       puts "Press enter to continue"
       gets
@@ -85,7 +85,7 @@ class Game
   end
 
   def dealer_play
-    clear_screen!
+    View.clear_screen!
     dealer.play
     puts dealer.summary
   end
@@ -137,7 +137,4 @@ class Game
       puts "Thanks for playing!"
     end
   end
-
-
-
 end
