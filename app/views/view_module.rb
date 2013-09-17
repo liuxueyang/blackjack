@@ -41,7 +41,6 @@ Welcome to Blackjack!
     player.hand.each { |card| puts "   #{card}" }
     puts "----------------------"
     puts "Hand total: #{player.display_total}"
-    puts "STATUS: #{player.status}"
     puts
   end
 
