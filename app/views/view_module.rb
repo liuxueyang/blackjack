@@ -36,12 +36,18 @@ Welcome to Blackjack!
   end
 
   def summary(name,hand,display_total)
-    puts hand.reduce("====== #{name} ======\n"){ |memo,card| memo + "#{card}\n" } +
-    "----------\nTotal: #{display_total}\n"
+    puts "====== #{name} ======"
+    puts "Cards:"
+    hand.each { |card| puts "   #{card}" }
+    puts "----------------------"
+    puts "Hand total: #{display_total}"
+    puts
   end
 
   def dealer_showing(card)
-    puts "Dealer is showing #{card}"
+    puts "Dealer is showing:"
+    puts "   #{card}"
+    puts
   end
 
   def action(options)
