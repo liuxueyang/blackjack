@@ -65,6 +65,41 @@ describe Dealer do
       subject.stub(:hand_total){19}
       subject.winners(@players).should == []
     end
+
+    context 'split players and push hands' do
+      before do
+        @player.stack = 990
+        @split_player = SplitPlayer.new("Split Test",@player)
+        @split_player.stack = 990
+        @split_player.bet = 10
+        @players << @split_player
+        subject.stub(:status){:stand}
+      end
+
+      it 'consolidate_split_hands when both hands push' do
+        @player.stub(:hand_total){20}
+        @split_player.stub(:hand_total){20}
+        subject.stub(:hand_total){20}
+        subject.winners(@players)
+        @player.stack.should == 1000
+      end
+
+      it 'consolidate_split_hands when split hand push' do
+        @player.stub(:hand_total){21}
+        @split_player.stub(:hand_total){20}
+        subject.stub(:hand_total){20}
+        subject.winners(@players)
+        @player.stack.should == 1010
+      end
+
+      it 'consolidate_split_hands when parent hand push' do
+        @player.stub(:hand_total){20}
+        @split_player.stub(:hand_total){21}
+        subject.stub(:hand_total){20}
+        subject.winners(@players)
+        @player.stack.should == 1010
+      end
+    end
   end
 
   describe '#payout' do
@@ -121,6 +156,7 @@ describe Dealer do
       subject.consolidate_split_hands([@player,@split_player])
       @player.stack.should == 1400
     end
+
   end
 
 end

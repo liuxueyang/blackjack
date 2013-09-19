@@ -33,6 +33,7 @@ class Dealer < Player
         winning_players << player
       elsif player.hand_total == hand_total
         push(player)
+        consolidate_split_hands([player])
       end
     end
 
