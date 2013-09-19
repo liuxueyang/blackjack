@@ -114,6 +114,18 @@ describe Dealer do
       subject.payout(@player)
       @player.stack.should == 1030
     end
+
+    it 'changes player won amount' do
+      @player.stub(:status){:stand}
+      subject.payout(@player)
+      @player.won.should == 20
+    end
+
+    it 'changes player won amount for blackjack' do
+      @player.stub(:status){:blackjack}
+      subject.payout(@player)
+      @player.won.should == 30
+    end
   end
 
   describe '#push' do

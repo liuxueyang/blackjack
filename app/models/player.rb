@@ -1,6 +1,6 @@
 class Player
   attr_reader :name
-  attr_accessor :hand, :stack, :stand, :bet, :parent
+  attr_accessor :hand, :stack, :stand, :bet, :parent, :won
 
   def initialize(name)
     @name = name
@@ -8,6 +8,7 @@ class Player
     @stack = STARTING_STACK
     @stand = false
     @bet = 0
+    @won = 0
   end
 
   def double_bet

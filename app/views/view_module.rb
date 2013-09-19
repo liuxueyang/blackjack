@@ -59,8 +59,8 @@ Welcome to Blackjack!
     puts "Press enter to continue"
   end
 
-  def announce_result(result,name,total,stack)
-    puts "#{name} #{result} Hand: #{total}, New stack: $#{stack}"
+  def announce_result(result,name,total,won)
+    puts "#{name} #{result} Hand: #{total}, Won: $#{won}"
   end
 
   def play_again(name)

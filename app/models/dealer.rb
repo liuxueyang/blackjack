@@ -44,9 +44,11 @@ class Dealer < Player
 
   def payout(player)
     if player.status == :blackjack
-      player.stack += player.bet*3
+      player.won = player.bet*3
+      player.stack += player.won
     else
-      player.stack += player.bet*2
+      player.won = player.bet*2
+      player.stack += player.won
     end
   end
 

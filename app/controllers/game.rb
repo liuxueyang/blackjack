@@ -99,7 +99,7 @@ class Game
     winning_players = dealer.winners(players)
     players.each do |player|
       result = winning_players.include?(player) ? "WON!" : "did not win."
-      View.announce_result(result,player.name,player.display_total,player.stack)
+      View.announce_result(result,player.name,player.display_total,player.won)
     end
   end
 
